@@ -1,0 +1,34 @@
+from collections import Counter
+
+participant = ["leo", "kiki", "eden"]
+completion = ["eden", "kiki"]
+
+# def solution(participant, completion):
+#     answer = ''
+    
+#     for name in completion : 
+#         if name in participant :
+#             participant.remove(name)
+    
+#     answer = participant[0]
+    
+#     return answer
+
+# answer = solution(participant, completion)
+
+# print(answer)
+
+
+# hash
+# dict, set 의미
+# collections - Counter 값 : 갯수
+
+def solution(participant, completion):
+    counter = Counter(participant)
+    
+    for name in completion:
+        counter[name] -= 1
+    
+    for name in counter:
+        if counter[name] > 0:
+            return name

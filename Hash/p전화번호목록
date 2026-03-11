@@ -1,0 +1,14 @@
+
+def solution(phone_book):
+    phone_set = set(phone_book)
+
+    for phone in phone_book:
+        prefix = ""
+        for num in phone[:-1]:
+            prefix += num
+            if prefix in phone_set:
+                return False
+
+    return True
+
+solution(["119", "97674223", "1195524421"])

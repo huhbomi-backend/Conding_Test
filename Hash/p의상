@@ -1,0 +1,27 @@
+#순열
+from itertools import combinations
+
+def solution(clothes):
+    answer = 0
+
+    dic = {}
+
+    for clothe, type in clothes :
+        if type not in dic.keys() :
+            dic[type] = 1
+        else :
+            dic[type] += 1
+
+    for num in range(1,len(dic)+1) :
+        #튜플리턴
+        choose = combinations(dic.keys(), num)
+
+        for ch in choose:
+            mul = 1
+            for kind in ch:
+                mul *= dic[kind]
+            answer += mul
+
+    return answer
+
+solution([["yellow_hat", "headgear"], ["blue_sunglasses", "eyewear"], ["green_turban", "headgear"]])

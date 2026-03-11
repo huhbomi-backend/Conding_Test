@@ -1,0 +1,10 @@
+nums = [3,3,3,2,2,2]
+
+def solution(nums):
+    N = len(nums)
+
+    answer = N/2 if N/2 < len(set(nums)) else len(set(nums)) 
+
+    return answer
+
+solution(nums)
