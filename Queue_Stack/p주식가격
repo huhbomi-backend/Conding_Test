@@ -1,0 +1,43 @@
+from collections import deque
+
+def solution(prices):
+    answer = []
+
+    dic = {}
+
+    for i in range(len(prices)):
+        price = prices[i]
+
+        if price not in dic :
+            dic[price] = [i]
+        else :
+            dic[price] += [i]
+
+    setP = sorted(set(prices))
+
+
+
+    for i in range(len(prices)-1) :
+        price = prices[i]
+        comP = []
+        for x in setP :
+            if x < price :
+                comP.append(x)
+            else : break
+
+        temp = []
+        for x in comP :
+            temp += dic[x]
+
+        temp.sort()
+
+        for n in temp :
+            if i<n :
+                answer.append(n-i) 
+
+
+
+
+    return answer
+
+solution([1, 2, 3, 2, 3])
