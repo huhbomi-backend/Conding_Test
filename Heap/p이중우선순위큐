@@ -1,0 +1,36 @@
+import heapq
+
+def solution(operations):
+    answer = []
+    arr = list(range(0,10))
+
+    plus_nums = []
+    minus_nums = []
+
+    for s in operations :
+        inst, num = s.split()
+        num = int(num)
+
+        if inst == "I" :
+            heapq.heappush(plus_nums, num)
+            heapq.heappush(minus_nums, -num)
+
+        elif plus_nums :
+            if num == -1 :
+                plus_num = heapq.heappop(plus_nums)
+                minus_nums.remove(-plus_num)
+                
+            elif num == 1 :
+                minus_num = heapq.heappop(minus_nums)
+                plus_nums.remove(-minus_num)
+
+    if len(plus_nums) == 0 :
+        return [0,0]
+        
+    MAX = (-1)*heapq.heappop(minus_nums)
+    MIN = heapq.heappop(plus_nums)
+
+    return [MAX,MIN]
+
+print(solution(["I 3", "I 2", "I 1", "D 1", "D 1", "I 3", "D -1"])) 
+
