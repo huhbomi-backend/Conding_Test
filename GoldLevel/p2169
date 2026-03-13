@@ -1,0 +1,49 @@
+from collections import deque
+
+
+def dfs (y, x, sco,visit) :
+    global isFind, ans, N, M
+    
+    if x==M-1 and y == N-1 :
+        if isFind == False :
+            ans = sco
+            isFind = True
+        else : 
+            ans = max(ans,sco)
+
+        return
+    
+    for d in range(3) :
+        ny, nx = y+dy[d], x+dx[d]
+
+        if 0<=ny<N and 0<=nx<M and visit[ny][nx] == False :
+            visit[ny][nx] = True
+
+            dfs(ny,nx,sco+maps[ny][nx],visit)
+
+            visit[ny][nx] = False
+
+    return
+
+N, M  = map(int, input().split())
+
+maps = []
+visit = [[False]*M for _ in range(N)]
+
+dx = [-1,0,1]
+dy = [0,1,0]
+
+for _ in range(N) :
+    arr = list(map(int, input().split()))
+    maps.append(arr)
+
+
+
+ans = 0
+isFind = False
+
+visit[0][0] = True
+
+dfs(0,0,maps[0][0],visit)
+
+print(ans)

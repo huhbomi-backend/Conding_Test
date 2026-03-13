@@ -1,0 +1,21 @@
+from itertools import permutations
+
+def solution(k, dungeons):
+    answer = -1
+    
+    roots = list(permutations(list(range(len(dungeons))),len(dungeons)))
+    
+    for root in roots :
+        suc = 0
+        power = k
+        for r in root :
+            need, consum = dungeons[r]
+            if power >= need and power-consum>=0 :
+                suc += 1
+                power -= consum
+            else :
+                break
+        answer = max(suc, answer)
+            
+    
+    return answer

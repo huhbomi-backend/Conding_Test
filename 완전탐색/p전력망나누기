@@ -1,0 +1,44 @@
+from collections import deque
+
+def solution(n, wires):
+    answer = -1
+
+    for i in range(len(wires)) :
+        visit = [0]*(n+1)
+        
+        s,e = wires[(i+1)%len(wires)]
+
+        visit[s] = 1
+        visit[e] = 1
+        
+        q = deque([s,e])
+        
+        while q :
+            now = q.popleft()
+
+            for j in range(len(wires)) :
+                if i==j:
+                    continue
+                S,E = wires[j]
+                
+                if (S==now and visit[E] == 0) :
+                    visit[E] = 1
+                    q.append(E)
+                elif (E==now and visit[S]==0) :
+                    visit[S] = 1
+                    q.append(S)
+        
+        SUM = sum(visit)
+        
+        minus = abs(n-SUM)
+        
+        answer = minus if answer == -1 else min(answer, minus)
+        
+        if answer == 1 :
+            print(visit)
+    
+    
+    
+    return answer
+
+solution(9,[[1,3],[2,3],[3,4],[4,5],[4,6],[4,7],[7,8],[7,9]])
