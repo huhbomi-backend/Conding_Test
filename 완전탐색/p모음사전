@@ -1,0 +1,28 @@
+vowels = ['A','E','I','O','U']
+answer = 0 
+cnt = 0
+
+def dfs(word, target) :
+    global answer, cnt
+    
+    if word == target :
+        answer = cnt 
+        return 
+
+    if len(word) == 5 :
+        return
+    
+    for c in vowels :
+        cnt +=1
+        dfs(word+c, target)
+
+
+
+def solution(word):
+    global answer
+
+    dfs("", word)
+
+    return answer
+
+solution("AAAAE")

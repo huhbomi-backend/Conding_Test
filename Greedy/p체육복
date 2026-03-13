@@ -1,0 +1,57 @@
+redund = [False]
+N = 0 
+SUM = 0
+
+def dfs(i, lost, borrow):
+    global SUM
+    if i == len(lost) :
+        SUM = max(SUM, sum(borrow))
+        return
+
+    stu = lost[i]
+    dstu = [-1,1]
+
+    for d in dstu :
+        bstu = stu + d
+
+        if 0<bstu<=N :
+            if redund[bstu]:
+                redund[bstu] = False
+                borrow[stu] = 1
+                dfs(i+1,lost,borrow)
+                redund[bstu] = True
+                borrow[stu] = 0
+            else :
+                dfs(i+1,lost,borrow)
+
+    return
+
+
+
+def solution(n, lost, reserve):
+    global redund, N, SUM
+    answer = 0
+
+    N = n
+
+    redund = [False]*(n+1)
+    borrow = [0]*(n+1)
+
+    real_lost = []
+    real_reserve = reserve.copy()
+
+    for i in lost :
+        if i in reserve :
+            real_reserve.remove(i)
+        else :
+            real_lost.append(i)
+
+    for i in real_reserve :
+        redund[i] = True
+
+    dfs(0, real_lost, borrow)
+
+
+    return n-len(real_lost)+SUM
+
+solution(5,[2,3,4],[3,5])
