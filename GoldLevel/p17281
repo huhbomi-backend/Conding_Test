@@ -1,54 +1,61 @@
 from itertools import permutations
-from collections import deque
 
-def play(n, players) :
-    global result
+def play(order,i,turn) :
+    global shoots
 
-    q = deque([-1,-1,-1])
-    players = deque(players)
-
-    out = 0
     sco = 0
+    out = 0
+
+    b1, b2, b3 = 0,0,0
 
     while out<3 :
-        player = players.popleft()
+        player = order[turn]
 
-        ball = result[n][player]
+        shoot = shoots[i][player]
 
-        if ball == 0 :
-            out += 1
-        else : 
-            q.append(player)
-            for _ in range(ball-1) :
-                q.append(-1)
-            for _ in range(ball) :
-                IN = q.popleft()
-                if IN >-1 :
-                    sco += 1
+        turn = (turn+1)%9
 
-        players.append(player)
+        if shoot == 0 :
+            out +=1
+            continue
 
-    return sco, players
+        elif shoot == 1 :
+            sco += b3
+            b3, b2, b1 = b2,b1,1
+        elif shoot == 2 :
+            sco += b3+b2
+            b3,b2,b1 = b1,1,0
+        elif shoot == 3 :
+            sco += b3+b2+b1
+            b3,b2,b1 = 1,0,0
+        elif shoot == 4 :
+            sco += b3+b2+b1+1
+            b3,b2,b1 = 0,0,0
+        
 
-ans = 0 
+
+    return sco, turn
+
 N = int(input())
-result = []
+shoots = []
 
 for _ in range(N) :
-    arr = list(map(int, input().split()))
-    result.append(arr)
+    t = list(map(int, input().split()))
+    shoots.append(t)
 
 orders = permutations(list(range(1,9)), 8)
 
+ans = 0 
+
 for order in orders :
     order = list(order)
-    order = order[0:3]+[0]+order[3:]
-    
-    score = 0 
-    players = order.copy()
-    for _ in range(N) :
-        sco, players = play(_, players)
-        score+=sco
-    ans = max(ans,score)
-    
+    order.insert(3,0)
+
+    turn = 0
+    sum_sco = 0
+    for i in range(N) :
+        sco, turn = play(order,i,turn)
+        sum_sco += sco 
+    ans = max(ans,sum_sco)
+
 print(ans)
