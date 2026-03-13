@@ -1,0 +1,32 @@
+
+from itertools import permutations
+
+def solution(numbers):
+    answer = 0
+    numbers = list(map(str,numbers))
+    
+    per = []
+    
+    for i in range(1,len(numbers)+1) :
+        groups = list(permutations(numbers,i))
+        
+        for group in groups :
+            num = "".join(group)
+        
+            per.append(int(num))
+    
+    per = set(per)
+    
+    for num in per : 
+        if num == 2 :
+            answer += 1
+        elif num>2 :
+                isPos = True
+                for i in range(2,int(num**0.5)+1) :
+                    if num%i == 0 :
+                        isPos = False
+                        break
+                if isPos :
+                    answer += 1
+    
+    return answer
