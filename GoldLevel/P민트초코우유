@@ -1,0 +1,170 @@
+
+from collections import deque
+
+
+def play(reader) :
+    global likes, maps, N, change
+
+    dy,dx = [-1,1,0,0],[0,0,-1,1]
+
+    order = ['T','C','M']
+
+    for B,Y,X in reader : 
+        #전파 당한 리더는 전파하지 않음
+        if change[Y][X] :
+            continue
+
+        maps[Y][X] = 1
+        like = likes[Y][X]
+        #간절함
+        P = B-1
+        d = B%4
+
+        y,x = Y,X
+
+        while P>0 : 
+            ny, nx = y+dy[d], x+dx[d]    
+
+            if (0<=ny<N and 0<=nx<N) and P>0 :
+                if likes[ny][nx] == like :
+                    y,x = ny,nx
+                    continue
+                else : 
+                    p = maps[ny][nx]
+                    change[ny][nx] = True
+                    #강한전파
+                    if P>p : 
+                        likes[ny][nx] = like
+                        P -= p+1
+                        maps[ny][nx] += 1
+                    #약한전파, 둘다 좋아하게 됨
+                    else :         
+                        maps[ny][nx] += P
+                        P = 0
+
+                        new_like = list(like+likes[ny][nx])
+
+                        
+                        like_s = ""
+
+                        for c in order :
+                            if c in new_like :
+                                like_s += c
+
+                        likes[ny][nx] = like_s
+                            
+                    y,x = ny,nx
+
+            else : 
+                break
+
+
+
+
+
+N,T = map(int, input().split())
+
+#T 민트, C초코, M 우유
+
+
+
+likes = []
+maps = []
+
+dx = [0,-1,1,0]
+dy = [-1,0,0,1]
+
+for _ in range(N) :
+    tmp = list(input())
+    likes.append(tmp)
+
+for _ in range(N) :
+    tmp = list(map(int,input().split()))
+    maps.append(tmp)
+
+for _ in range(T) :
+    # 아침
+    for y in range(N) :
+        for x in range(N) :
+            maps[y][x] += 1
+
+    # 점심 
+
+    reader_1 = []
+    reader_2 = []
+    reader_3 = []
+
+    visit = [[False] * N for _ in range(N)]
+    for y in range(N) :
+        for x in range(N) :
+            if visit[y][x] == False :
+                visit[y][x] = True
+                
+                BEL,Y,X = maps[y][x], y, x
+                like = likes[y][x]
+                
+                group = [[y,x]]
+
+                q = deque([[y,x]])
+                
+                while q : 
+                    yy, xx = q.popleft()
+
+                    for d in range(4) :
+                        ny, nx = yy+dy[d], xx+dx[d]
+
+                        if 0<=ny<N and 0<=nx<N and visit[ny][nx] == False and likes[ny][nx] == like :
+                            visit[ny][nx] = True
+                            group.append([ny,nx])
+                            q.append([ny,nx])
+
+                            if BEL < maps[ny][nx] :
+                                BEL, Y, X = maps[ny][nx], ny, nx
+                            elif BEL == maps[ny][nx] and Y>ny : 
+                                BEL, Y, X = maps[ny][nx], ny, nx
+                            elif BEL == maps[ny][nx] and Y==ny and X>nx: 
+                                BEL, Y, X = maps[ny][nx], ny, nx
+
+                
+                maps[Y][X] += len(group)-1
+                for yy,xx in group :
+                    if yy==Y and xx==X :
+                        continue
+                    maps[yy][xx] -= 1
+
+                ## 리더 추가
+                if len(like) == 1 :
+                    reader_1.append([maps[Y][X],Y,X])
+                elif len(like) == 2 :
+                    reader_2.append([maps[Y][X],Y,X])
+                elif len(like) == 3 :
+                    reader_3.append([maps[Y][X],Y,X])
+
+
+    # 저녁
+    reader_1.sort(key=lambda x : (-x[0],x[1],x[2]))
+    reader_2.sort(key=lambda x : (-x[0],x[1],x[2]))
+    reader_3.sort(key=lambda x : (-x[0],x[1],x[2]))
+
+    change = [[False]*N for _ in range(N)]
+
+    play(reader_1)
+    play(reader_2)
+    play(reader_3)
+
+    lists = ['TCM', 'TC', 'TM', 'CM', 'M', 'C', 'T']
+    
+    ans = {}
+
+    for c in lists :
+        ans[c] = 0
+
+    for y in range(N) : 
+        for x in range(N) :
+            like = likes[y][x]
+            ans[like] += maps[y][x]
+
+    for like in lists :
+        print(f"{ans[like]} ", end = "")
+    print("")
+

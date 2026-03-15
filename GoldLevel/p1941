@@ -1,0 +1,41 @@
+from collections import deque
+
+N = 5
+
+maps = []
+
+for _ in range(N) :
+    tmp = list(input())
+    maps.append(tmp)
+
+dx = [-1,0,1,0]
+dy = [0,-1,0,1]
+
+answer = 0
+
+for y in range(N) :
+    for x in range(N) :
+        if maps[y][x] == "S" :
+            visit = [[False]*N for _ in range(N)]
+            visit[y][x] = True
+
+            q = deque([[y,x,1,1,visit]])
+
+            while q : 
+                Y,X,s_cnt,cnt,now_visit = q.popleft()
+
+                if now_visit == 7 :
+                    if s_cnt>=4 : 
+                        ans
+
+                for d in range(4) :
+                    ny, nx = Y+dy[d], X+dx[d]
+
+                    if 0<=ny<N and 0<=nx<N and now_visit[ny][nx] == False : 
+                        next_visit = [row[:] for row in now_visit]
+                        next_visit[ny][nx] = True
+                        if maps[ny][nx] == "S" :
+                            q.append([ny,nx,s_cnt+1,cnt+1,next_visit])
+                        else :
+                            q.append([ny,nx,s_cnt,cnt+1,next_visit])
+

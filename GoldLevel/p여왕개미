@@ -1,0 +1,73 @@
+ans = 0
+
+
+def dfs(group, key_list, now, r) :
+    global ans 
+
+    if len(group) == r :
+        LEN = 0
+
+        for i in range(len(group)) :
+                now_key = group[i]
+
+                if i == len(group)-1 :
+                    last_key = key_list[-1]
+                    LEN = max(LEN,home[last_key] - home[now_key])
+                    break
+
+                if now_key == key_list[-1] :
+                    break
+
+                next_key = group[i+1]
+
+                next_before_key = key_list[key_list.index(next_key) - 1]
+
+                LEN = max(LEN,home[next_before_key]-home[now_key])
+
+        ans = min(ans,LEN)
+
+        return
+    
+    for i in range(now+1, len(key_list)) :
+        next_key = key_list[i]
+        dfs(group+[next_key], key_list, i, r)
+
+
+
+N = int(input())
+
+home = {}
+answer = []
+
+for _ in range(N) :
+    inst = list(map(int, input().split()))
+
+    ans = 0
+
+    if inst[0] == 100 :
+        N, arr = inst[1], inst[2:]
+        for i, h in enumerate(arr) :
+            home[i+1] = h
+    elif inst[0] == 200 :
+        N += 1
+        home[N] = inst[1]
+    elif inst[0] == 300 :
+        q = inst[1]
+        del home[q]
+    elif inst[0] == 400 :
+        r = inst[1]
+
+        if r == 1 :
+            ans = home[max(list(home.keys()))] - home[min(list(home.keys()))]
+        elif r<len(home) : 
+            key_list = list(home.keys())
+            key_first = key_list[0]
+
+            ans = float('inf')
+
+            dfs([key_first], key_list, 0, r)
+
+        answer.append(ans)
+
+for ans in answer : 
+    print(ans)
