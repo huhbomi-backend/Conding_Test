@@ -1,0 +1,93 @@
+import heapq
+
+T = int(input())
+
+sheeps_info = {}
+
+sheeps_time = {}
+
+waiting = []
+
+time = 0
+
+for _ in range(T) :
+    inst = list(map(int,input().split()))
+
+    if inst[0] == 100 :
+        N = inst[1]
+        #선박번호 id, 공격력p, 재정비시간 r
+
+        tmp = inst[2:]
+
+        for i in range(0,len(tmp),3) :
+            id, p, r = tmp[i],tmp[i+1],tmp[i+2]
+            
+            sheeps_info[id] = [p,r]
+
+            heapq.heappush(waiting,(-p,id))
+
+    # 지원요청
+    elif inst[0] == 200 :
+        id, p, r = inst[1], inst[2], inst[3]
+
+        sheeps_info[id] = [p,r]
+
+        heapq.heappush(waiting,(-p,id))
+
+    # 함포 교체
+    elif inst[0] == 300 :
+        id, p = inst[1], inst[2]
+        sheeps_info[id][0] = p
+
+        if id not in sheeps_time.keys() :
+            heapq.heappush(waiting,(-p, id))
+
+    elif inst[0] == 400 :
+        keys = list(sheeps_time.keys())
+
+        for key in keys :
+            power, r = sheeps_info[key]
+            if sheeps_time[key] + time >= r :
+                heapq.heappush(waiting,(-power,key))
+
+                del sheeps_time[key]
+            
+            else : 
+                sheeps_time[key] += time             
+
+        #총 피해량, 사격선반 수, 사격한 선박 번호
+        cnt = 0
+        attack = 0
+
+        ans = []
+
+        while cnt<5 and waiting : 
+            power, id = heapq.heappop(waiting)
+
+            power = -power
+
+            if sheeps_info[id][0] != power :
+                continue
+
+            attack += power
+            cnt += 1
+
+            sheeps_time[id] = 0
+
+            ans.append(id)
+
+        print(f'{attack} {cnt} ', end = '')
+
+        for id in ans :
+            print(f'{id} ', end = '')
+        print("")
+        
+        time = 0
+    
+    time += 1
+
+
+            
+
+
+
